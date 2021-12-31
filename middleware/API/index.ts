@@ -13,12 +13,12 @@ const instance = axios.create({
     withCredentials: false,
     headers: {
         "cache-control": "no-cache",
-	    'content-type': 'application/json',
+        "content-type": "application/json",
     },
     params: {
         _: dayjs().valueOf(),
         api_key: Config.apikey,
-	    format: 'json'
+        format: "json",
     },
 });
 

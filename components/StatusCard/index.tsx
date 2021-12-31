@@ -1,6 +1,6 @@
 import React from "react";
-import { Monitor, MonitorElement } from "../../types/Monitor";
-import { Box, Divider, Theme, Typography } from "@mui/material";
+import { MonitorElement } from "../../types/Monitor";
+import { Box, Theme, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,8 +34,10 @@ export default function StatusCard(props: { monitor: MonitorElement }) {
                         <Typography variant={"h5"} component={"h3"}>
                             {monitor.friendly_name}
                         </Typography>
-                        <Typography variant={"body1"} component={"span"}>
-                        </Typography>
+                        <Typography
+                            variant={"body1"}
+                            component={"span"}
+                        ></Typography>
                     </Box>
                 </Box>
             </Box>

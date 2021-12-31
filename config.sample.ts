@@ -1,4 +1,4 @@
 export const Config = {
     siteName: "",
-    apikey: ""
+    apikey: "",
 };
