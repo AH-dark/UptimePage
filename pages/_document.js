@@ -6,7 +6,7 @@ import { theme } from "./_app";
 export default class MyDocument extends Document {
     render() {
         return (
-            <Html lang="zh-CN">
+            <Html lang="en">
                 <Head>
                     {/* PWA primary color */}
                     <meta
