@@ -18,9 +18,6 @@ Static Page for UptimeRobot. Powered by Next.js
 
 请自行前往<https://uptimerobot.com/>获取只读权限的API Key，全读写权限将有安全隐患。
 
-[![gvk7.png](https://q3.a1pic.cn/2022/01/01/gvk7.png)](https://www.alphapic.org.cn/p/gvk7)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FAH-dark%2FUptimePage.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FAH-dark%2FUptimePage?ref=badge_shield)
-
 ## 开发进度
 
 请前往 Project 栏目查看：<https://github.com/AH-dark/UptimePage/projects/1>
@@ -50,6 +47,3 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 **严禁移除底部版权标识**
-
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FAH-dark%2FUptimePage.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FAH-dark%2FUptimePage?ref=badge_large)
