@@ -4,4 +4,4 @@ export const Config = {
     logo: "https://q2.a1pic.cn/2022/01/01/gtUy.jpg",
 };
 
-export const Debug = true;
+export const Debug = false;
