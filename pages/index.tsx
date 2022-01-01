@@ -17,15 +17,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorIcon from "@mui/icons-material/ErrorRounded";
 import StatusCard from "../components/StatusCard";
 import Footer from "../components/Footer";
+import { GetServerSideProps } from "next";
 
 // noinspection JSUnusedGlobalSymbols
 /**
  * @description 从API获取数据
  * @see https://www.nextjs.cn/docs/basic-features/data-fetching
  */
-export const getStaticProps: () => Promise<{
-    props: { data: Monitor; time: string };
-}> = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
     const dates = [];
     const days = 29;
     const today = dayjs(new Date().setHours(0, 0, 0, 0));
@@ -111,7 +110,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 // noinspection JSUnusedGlobalSymbols
-export default function Home({ data, time }): JSX.Element {
+export default function Home({
+    data,
+    time,
+}: {
+    data: Monitor;
+    time: string;
+}): JSX.Element {
     const classes = useStyles();
 
     if (Debug) {
