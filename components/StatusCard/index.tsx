@@ -23,12 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
-            "last-of-type": {
-                border: 0,
-                marginBottom: 0,
-                paddingBottom: 0,
-            },
+            alignItems: "flex-start"
         },
         header: {
             display: "flex",
