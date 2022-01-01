@@ -108,7 +108,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Home({ data, time }) {
     const classes = useStyles();
 
-    console.log(data);
+    if (Debug) {
+        console.log(data);
+    }
     const monitors = data.monitors;
     const isAllOperational: Boolean =
         data.pagination.offset === 0 || data.pagination.total === 0;
@@ -208,11 +210,18 @@ export default function Home({ data, time }) {
                         {"Uptime"}
                     </Typography>
                     <Paper className={classes.paper}>
-                        {monitors.map((monitor: MonitorElement) => {
-                            if (monitor.status !== 0) {
-                                return <StatusCard monitor={monitor} />;
+                        {monitors.map(
+                            (monitor: MonitorElement, index: number) => {
+                                if (monitor.status !== 0) {
+                                    return (
+                                        <StatusCard
+                                            monitor={monitor}
+                                            key={index}
+                                        />
+                                    );
+                                }
                             }
-                        })}
+                        )}
                     </Paper>
                 </Box>
                 <Footer />

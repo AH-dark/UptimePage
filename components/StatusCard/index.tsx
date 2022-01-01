@@ -222,21 +222,20 @@ export default function StatusCard(props: { monitor: MonitorElement }) {
                         iconColor = "#687790";
                     }
 
-                    return (
-                        <Tooltip
-                            title={title}
-                            arrow={true}
-                            TransitionComponent={Zoom}
-                        >
-                            <CircleRoundedIcon
-                                className={classes.icon}
-                                style={{
-                                    color: iconColor,
-                                    fillOpacity: fillOpacity,
-                                }}
-                            />
-                        </Tooltip>
-                    );
+                    return <Tooltip
+                        title={title}
+                        arrow={true}
+                        TransitionComponent={Zoom}
+                        key={index}
+                    >
+                        <CircleRoundedIcon
+                            className={classes.icon}
+                            style={{
+                                color: iconColor,
+                                fillOpacity: fillOpacity,
+                            }}
+                        />
+                    </Tooltip>
                 })}
             </Box>
         </Box>
