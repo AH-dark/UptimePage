@@ -8,15 +8,15 @@ import {
     Paper,
     Theme,
     Typography,
-}                                   from "@mui/material";
-import api                          from "../middleware/API";
+} from "@mui/material";
+import api from "../middleware/API";
 import { createStyles, makeStyles } from "@mui/styles";
-import dayjs                        from "dayjs";
-import { Monitor, MonitorElement }  from "../types/Monitor";
-import CheckCircleIcon              from "@mui/icons-material/CheckCircleRounded";
-import ErrorIcon                    from "@mui/icons-material/ErrorRounded";
-import StatusCard                   from "../components/StatusCard";
-import Footer                       from "../components/Footer";
+import dayjs from "dayjs";
+import { Monitor, MonitorElement } from "../types/Monitor";
+import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
+import ErrorIcon from "@mui/icons-material/ErrorRounded";
+import StatusCard from "../components/StatusCard";
+import Footer from "../components/Footer";
 
 export const getStaticProps: () => Promise<{
     props: { data: Monitor };
@@ -117,6 +117,22 @@ export default function Home({ data, time }) {
         <>
             <Head>
                 <title>{Config.siteName}</title>
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, maximum-scale=5"
+                />
+                <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+                <meta name="robots" content="noindex, nofollow" />
+                <meta property="og:site_name" content={Config.siteName} />
+                <meta property="og:title" content={Config.siteName} />
+                <meta property="og:locale" content="en_US" />
+                <meta
+                    property="og:description"
+                    content="服务状态监控页面，使用UptimeRobot API获取数据。"
+                />
+                <link rel="mask-icon" href={Config.logo} color="#3f51b5" />
+                <link rel="shortcut icon" href={Config.logo} />
+                <link rel="icon" href={Config.logo} />
             </Head>
             <CssBaseline />
             <header className={classes.header}>
@@ -199,7 +215,7 @@ export default function Home({ data, time }) {
                         })}
                     </Paper>
                 </Box>
-                <Footer/>
+                <Footer />
             </Container>
         </>
     );

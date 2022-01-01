@@ -40,7 +40,12 @@ export default function Footer() {
             {/* 版权声明严禁修改！ */}
             <Typography variant={"body2"}>
                 {"Powered by "}
-                <Link href={"https://github.com/AH-dark/UptimePage"} target={"_blank"} underline={"none"} rel={"noopener"}>
+                <Link
+                    href={"https://github.com/AH-dark/UptimePage"}
+                    target={"_blank"}
+                    underline={"none"}
+                    rel={"noopener"}
+                >
                     {"AH-dark/UptimePage"}
                 </Link>
                 {"."}

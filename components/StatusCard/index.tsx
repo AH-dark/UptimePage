@@ -108,7 +108,7 @@ export default function StatusCard(props: { monitor: MonitorElement }) {
         sum += v;
     }
     const availablePercent = (sum / customUptimeList.length).toFixed(2);
-    
+
     let match: number;
     const widthSm = useMediaQuery(theme.breakpoints.down("sm"));
     const widthMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
