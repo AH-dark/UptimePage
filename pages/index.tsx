@@ -1,5 +1,6 @@
+import React from "react";
 import Head from "next/head";
-import { Config } from "../config";
+import { Config, Debug } from "../config";
 import {
     Box,
     Container,
@@ -11,7 +12,7 @@ import {
 import api from "../middleware/API";
 import { createStyles, makeStyles } from "@mui/styles";
 import dayjs from "dayjs";
-import { Monitor } from "../types/Monitor";
+import { Monitor, MonitorElement } from "../types/Monitor";
 import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorIcon from "@mui/icons-material/ErrorRounded";
 import StatusCard from "../components/StatusCard";
@@ -19,13 +20,34 @@ import StatusCard from "../components/StatusCard";
 export const getStaticProps: () => Promise<{
     props: { data: Monitor };
 }> = async () => {
-    const monitorsData = await api.post("/getMonitors", {
-        params: {
-            all_time_uptime_ratio: 1,
-            logs: 1,
-        },
+    const dates = [];
+    const days = 29;
+    const today = dayjs(new Date().setHours(0, 0, 0, 0));
+    for (let d = 0; d < days; d++) {
+        dates.push(today.subtract(d, "day"));
+    }
+
+    const ranges = [];
+    dates.forEach((date) => {
+        ranges.push(`${date.unix()}_${date.add(1, "day").unix()}`);
     });
-    console.log(monitorsData.data);
+
+    const logs_start_date = dates[dates.length - 1].unix();
+    const logs_end_date = dates[0].add(1, "day").unix();
+    ranges.push(`${logs_start_date}_${logs_end_date}`);
+
+    const monitorsData = await api.post("/getMonitors", {
+        api_key: Config.apikey,
+        format: "json",
+        logs: 1,
+        log_types: "1-2",
+        logs_start_date: logs_start_date,
+        logs_end_date: logs_end_date,
+        custom_uptime_ranges: ranges.join("-"),
+    });
+    if (Debug) {
+        console.log(onitorsData.data);
+    }
     return {
         props: {
             data: monitorsData.data,
@@ -51,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
         pspHeadSec: {
             marginTop: -40,
             marginBottom: theme.spacing(4),
-            padding: 60,
+            padding: "2.6rem",
             boxShadow: "0 20px 60px rgb(0 0 0 / 10%)",
             color: "#131a26",
             display: "flex",
@@ -74,9 +96,10 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: "column",
             flexWrap: "nowrap",
             alignItems: "flex-start",
-            padding: 60,
+            padding: "2rem",
             boxShadow: "0 20px 60px rgb(0 0 0 / 10%)",
             marginTop: theme.spacing(1.5),
+            paddingBottom: 0,
         },
     })
 );
@@ -117,7 +140,27 @@ export default function Home({ data, time }) {
             </header>
             <Container maxWidth={"md"}>
                 <Paper className={classes.pspHeadSec}>
-                    {!isAllOperational && (
+                    {isAllOperational ? (
+                        <>
+                            <CheckCircleIcon
+                                className={classes.statIconOperational}
+                            />
+                            <Typography
+                                variant={"h4"}
+                                component={"h2"}
+                                fontWeight={"bold"}
+                            >
+                                All systems{" "}
+                                <span
+                                    style={{
+                                        color: "#3bd671",
+                                    }}
+                                >
+                                    operational
+                                </span>
+                            </Typography>
+                        </>
+                    ) : (
                         <>
                             <ErrorIcon
                                 className={classes.statIconUnavailable}
@@ -138,29 +181,8 @@ export default function Home({ data, time }) {
                             </Typography>
                         </>
                     )}
-                    {isAllOperational && (
-                        <>
-                            <CheckCircleIcon
-                                className={classes.statIconOperational}
-                            />
-                            <Typography
-                                variant={"h4"}
-                                component={"h2"}
-                                fontWeight={"bold"}
-                            >
-                                All systems{" "}
-                                <span
-                                    style={{
-                                        color: "#3bd671",
-                                    }}
-                                >
-                                    operational
-                                </span>
-                            </Typography>
-                        </>
-                    )}
                 </Paper>
-                <Box component={"section"}>
+                <Box component={"section"} pb={6}>
                     <Typography
                         variant={"h4"}
                         component={"h2"}
@@ -169,9 +191,11 @@ export default function Home({ data, time }) {
                         {"Uptime"}
                     </Typography>
                     <Paper className={classes.paper}>
-                        {monitors.map((monitor) => (
-                            <StatusCard monitor={monitor} />
-                        ))}
+                        {monitors.map((monitor: MonitorElement) => {
+                            if (monitor.status !== 0) {
+                                return <StatusCard monitor={monitor} />;
+                            }
+                        })}
                     </Paper>
                 </Box>
             </Container>

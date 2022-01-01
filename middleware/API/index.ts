@@ -1,6 +1,5 @@
 import axios from "axios";
 import dayjs from "dayjs";
-import { Config } from "../../config";
 
 const Endpoint = "https://api.uptimerobot.com/v2/";
 
@@ -17,8 +16,6 @@ const instance = axios.create({
     },
     params: {
         _: dayjs().valueOf(),
-        api_key: Config.apikey,
-        format: "json",
     },
 });
 

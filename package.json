@@ -15,6 +15,7 @@
     "@mui/material": "^5.2.6",
     "@mui/styles": "^5.2.3",
     "axios": "^0.24.0",
+    "classnames": "^2.3.1",
     "dayjs": "^1.10.7",
     "next": "12.0.7",
     "prettier": "^2.5.1",

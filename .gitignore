@@ -36,6 +36,3 @@ yarn-error.log*
 # Editor
 /.vscode/
 /.idea/
-
-# config
-config.ts
