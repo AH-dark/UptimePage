@@ -8,14 +8,15 @@ import {
     Paper,
     Theme,
     Typography,
-} from "@mui/material";
-import api from "../middleware/API";
+}                                   from "@mui/material";
+import api                          from "../middleware/API";
 import { createStyles, makeStyles } from "@mui/styles";
-import dayjs from "dayjs";
-import { Monitor, MonitorElement } from "../types/Monitor";
-import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
-import ErrorIcon from "@mui/icons-material/ErrorRounded";
-import StatusCard from "../components/StatusCard";
+import dayjs                        from "dayjs";
+import { Monitor, MonitorElement }  from "../types/Monitor";
+import CheckCircleIcon              from "@mui/icons-material/CheckCircleRounded";
+import ErrorIcon                    from "@mui/icons-material/ErrorRounded";
+import StatusCard                   from "../components/StatusCard";
+import Footer                       from "../components/Footer";
 
 export const getStaticProps: () => Promise<{
     props: { data: Monitor };
@@ -46,7 +47,7 @@ export const getStaticProps: () => Promise<{
         custom_uptime_ranges: ranges.join("-"),
     });
     if (Debug) {
-        console.log(onitorsData.data);
+        console.log(monitorsData.data);
     }
     return {
         props: {
@@ -198,6 +199,7 @@ export default function Home({ data, time }) {
                         })}
                     </Paper>
                 </Box>
+                <Footer/>
             </Container>
         </>
     );

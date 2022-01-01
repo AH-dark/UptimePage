@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme: Theme) =>
             alignContent: "center",
             justifyContent: "space-evenly",
             width: "100%",
-            paddingTop: theme.spacing(1),
+            paddingTop: theme.spacing(2),
         },
         icon: {
             display: "inline-flex",
@@ -84,16 +84,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     })
 );
-
-declare module "@mui/styles" {
-    interface BreakpointOverrides {
-        xs: true;
-        sm: true;
-        md: true;
-        lg: true;
-        xl: true;
-    }
-}
 
 const getTime: (day: number) => string = (day: number) => {
     return dayjs().subtract(day, "day").format("MMMM DD").toString();
@@ -105,7 +95,8 @@ const getTimestamp: (day: number) => number = (day: number) => {
 
 export default function StatusCard(props: { monitor: MonitorElement }) {
     const monitor = props.monitor;
-    const classes = useStyles();
+    const theme = useTheme<Theme>();
+    const classes = useStyles(theme);
 
     const customUptimeList = monitor.custom_uptime_ranges.split("-").reverse();
     let customUptime: Array<number> = [];
@@ -117,9 +108,7 @@ export default function StatusCard(props: { monitor: MonitorElement }) {
         sum += v;
     }
     const availablePercent = (sum / customUptimeList.length).toFixed(2);
-
-    const theme = useTheme();
-
+    
     let match: number;
     const widthSm = useMediaQuery(theme.breakpoints.down("sm"));
     const widthMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
