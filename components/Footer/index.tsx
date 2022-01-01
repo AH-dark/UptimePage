@@ -14,13 +14,13 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function Footer() {
-    const theme = useTheme<Theme>();
+export default function Footer(): JSX.Element {
+    const theme: Theme = useTheme<Theme>();
     const classes = useStyles(theme);
 
     const now = dayjs;
-    const yearNow = now().year();
-    const yearStart = 2021;
+    const yearNow: number = now().year();
+    const yearStart: number = 2021;
     let copyrightDate: string;
     if (yearNow > 2021) {
         copyrightDate = yearStart + "-" + yearNow;

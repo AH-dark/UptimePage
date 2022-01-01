@@ -18,8 +18,13 @@ import ErrorIcon from "@mui/icons-material/ErrorRounded";
 import StatusCard from "../components/StatusCard";
 import Footer from "../components/Footer";
 
+// noinspection JSUnusedGlobalSymbols
+/**
+ * @description 从API获取数据
+ * @see https://www.nextjs.cn/docs/basic-features/data-fetching
+ */
 export const getStaticProps: () => Promise<{
-    props: { data: Monitor };
+    props: { data: Monitor; time: string };
 }> = async () => {
     const dates = [];
     const days = 29;
@@ -105,14 +110,15 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function Home({ data, time }) {
+// noinspection JSUnusedGlobalSymbols
+export default function Home({ data, time }): JSX.Element {
     const classes = useStyles();
 
     if (Debug) {
         console.log(data);
     }
-    const monitors = data.monitors;
-    const isAllOperational: Boolean =
+    const monitors: MonitorElement[] = data.monitors;
+    const isAllOperational: boolean =
         data.pagination.offset === 0 || data.pagination.total === 0;
 
     return (

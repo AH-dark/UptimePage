@@ -22,7 +22,6 @@ export interface MonitorElement {
     monitor_group?: number;
     is_group_main?: number;
     logs?: Log[];
-    all_time_uptime_ratio?: number;
     custom_uptime_ranges?: string;
 }
 

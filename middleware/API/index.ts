@@ -1,13 +1,13 @@
-import axios from "axios";
-import dayjs from "dayjs";
+import axios, { AxiosInstance } from "axios";
+import dayjs                    from "dayjs";
 
-const Endpoint = "https://api.uptimerobot.com/v2/";
+const Endpoint: string = "https://api.uptimerobot.com/v2/";
 
-export const GetEndpoint = () => {
+export const GetEndpoint: () => string = () => {
     return Endpoint;
 };
 
-const instance = axios.create({
+const instance: AxiosInstance = axios.create({
     baseURL: GetEndpoint(),
     withCredentials: false,
     headers: {

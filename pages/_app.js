@@ -6,12 +6,10 @@ export const theme = createTheme({
     spacing: (factor) => `${0.5 * factor}rem`, // (Bootstrap strategy)
 });
 
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
     return (
         <ThemeProvider theme={theme}>
             <Component {...pageProps} />
         </ThemeProvider>
     );
 }
-
-export default MyApp;

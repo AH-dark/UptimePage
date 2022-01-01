@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start"
+            alignItems: "flex-start",
         },
         header: {
             display: "flex",
@@ -88,27 +88,35 @@ const getTimestamp: (day: number) => number = (day: number) => {
     return dayjs().subtract(day, "day").unix();
 };
 
-export default function StatusCard(props: { monitor: MonitorElement }) {
-    const monitor = props.monitor;
-    const theme = useTheme<Theme>();
+export default function StatusCard(props: {
+    monitor: MonitorElement;
+}): JSX.Element {
+    const monitor: MonitorElement = props.monitor;
+    const theme: Theme = useTheme<Theme>();
     const classes = useStyles(theme);
 
-    const customUptimeList = monitor.custom_uptime_ranges.split("-").reverse();
+    const customUptimeList: Array<string> = monitor.custom_uptime_ranges
+        .split("-")
+        .reverse();
     let customUptime: Array<number> = [];
 
-    let sum = 0;
+    let sum: number = 0;
     for (let i = 0; i < customUptimeList.length; i++) {
         let v = parseFloat(customUptimeList[i]);
         customUptime.push(v);
         sum += v;
     }
-    const availablePercent = (sum / customUptimeList.length).toFixed(2);
+    const availablePercent: string = (sum / customUptimeList.length).toFixed(2);
 
     let match: number;
-    const widthSm = useMediaQuery(theme.breakpoints.down("sm"));
-    const widthMd = useMediaQuery(theme.breakpoints.between("sm", "md"));
-    const widthLg = useMediaQuery(theme.breakpoints.between("md", "lg"));
-    const widXl = useMediaQuery(theme.breakpoints.between("lg", "xl"));
+    const widthSm: boolean = useMediaQuery(theme.breakpoints.down("sm"));
+    const widthMd: boolean = useMediaQuery(
+        theme.breakpoints.between("sm", "md")
+    );
+    const widthLg: boolean = useMediaQuery(
+        theme.breakpoints.between("md", "lg")
+    );
+    const widXl: boolean = useMediaQuery(theme.breakpoints.between("lg", "xl"));
 
     if (widthSm) {
         match = 1;
@@ -122,8 +130,8 @@ export default function StatusCard(props: { monitor: MonitorElement }) {
         match = 5;
     }
 
-    const matchToSize = [30, 23, 18, 6, 0, 0];
-    const iconNum = matchToSize[match];
+    const matchToSize: Array<number> = [30, 23, 18, 6, 0, 0];
+    const iconNum: number = matchToSize[match];
 
     return (
         <Box className={classes.root}>
@@ -180,7 +188,7 @@ export default function StatusCard(props: { monitor: MonitorElement }) {
                 </Box>
             </Box>
             <Box className={classes.iconArea}>
-                {customUptime.map((value, index) => {
+                {customUptime.map((value: number, index: number) => {
                     let iconColor: string;
                     let fillOpacity: number = 1;
                     let title: string;
@@ -217,20 +225,22 @@ export default function StatusCard(props: { monitor: MonitorElement }) {
                         iconColor = "#687790";
                     }
 
-                    return <Tooltip
-                        title={title}
-                        arrow={true}
-                        TransitionComponent={Zoom}
-                        key={index}
-                    >
-                        <CircleRoundedIcon
-                            className={classes.icon}
-                            style={{
-                                color: iconColor,
-                                fillOpacity: fillOpacity,
-                            }}
-                        />
-                    </Tooltip>
+                    return (
+                        <Tooltip
+                            title={title}
+                            arrow={true}
+                            TransitionComponent={Zoom}
+                            key={index}
+                        >
+                            <CircleRoundedIcon
+                                className={classes.icon}
+                                style={{
+                                    color: iconColor,
+                                    fillOpacity: fillOpacity,
+                                }}
+                            />
+                        </Tooltip>
+                    );
                 })}
             </Box>
         </Box>
