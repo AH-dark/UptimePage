@@ -19,7 +19,15 @@ Static Page for UptimeRobot. Powered by Next.js
 
 **API Key需要配置在环境变量中**，你可以在Vercel部署时添加环境变量，或在项目根目录下添加`.env`文件。
 
-> 原有在`config.js`中配置API Key并不足够安全，或者说无法给用户带来足够的安全感，即使是使用只读权限的Key
+> 原有在`config.js`中配置API Key并不足够安全，或者说无法给用户带来足够的安全感，即使是使用只读权限的Key。
+
+你可以同时使用多个API Key，只需使用`:`分隔每个API Key即可。
+
+> 通过环境变量`APIKEY_SPLIT`可以自定义分隔符，比如你可以设置为`114514`，但我不建议你这么搞。
+
+### Debug
+
+设置环境变量`DEBUG`为`true`即可开启Debug模式，开启后Console将显示部分请求的详细信息。
 
 ## 开发进度
 

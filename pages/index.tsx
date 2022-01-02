@@ -1,6 +1,6 @@
 import React from "react";
-import Head from "next/head";
-import { Config, Debug } from "../config";
+import Head                       from "next/head";
+import { Config } from "../config";
 import {
     Box,
     Container,
@@ -8,16 +8,19 @@ import {
     Paper,
     Theme,
     Typography,
-} from "@mui/material";
-import api from "../middleware/API";
+}                                   from "@mui/material";
+import api                          from "../middleware/API";
 import { createStyles, makeStyles } from "@mui/styles";
-import dayjs from "dayjs";
-import { Monitor, MonitorElement } from "../types/Monitor";
-import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
-import ErrorIcon from "@mui/icons-material/ErrorRounded";
-import StatusCard from "../components/StatusCard";
-import Footer from "../components/Footer";
-import { GetServerSideProps } from "next";
+import dayjs                        from "dayjs";
+import { Monitor, MonitorElement }  from "../types/Monitor";
+import CheckCircleIcon              from "@mui/icons-material/CheckCircleRounded";
+import ErrorIcon                    from "@mui/icons-material/ErrorRounded";
+import StatusCard                   from "../components/StatusCard";
+import Footer                       from "../components/Footer";
+import { GetServerSideProps }       from "next";
+import _Global                      from "../global";
+
+const Debug:boolean = _Global().Debug;
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -41,21 +44,45 @@ export const getServerSideProps: GetServerSideProps = async () => {
     const logs_end_date = dates[0].add(1, "day").unix();
     ranges.push(`${logs_start_date}_${logs_end_date}`);
 
-    const monitorsData = await api.post("/getMonitors", {
-        api_key: Config.apikey,
-        format: "json",
-        logs: 1,
-        log_types: "1-2",
-        logs_start_date: logs_start_date,
-        logs_end_date: logs_end_date,
-        custom_uptime_ranges: ranges.join("-"),
-    });
+    let data: Monitor = null;
+    const ApiKeys = Config.apikey.split(_Global().ApiKeySplit);
     if (Debug) {
-        console.log(monitorsData.data);
+        console.log("[SSR]: Split API Keys success");
+        console.log(ApiKeys);
+    }
+    for(let i=0;i<ApiKeys.length;i++) {
+        if (Debug) {
+            console.log("[SSR]: Processing API Key " + ApiKeys[i]);
+        }
+        const res = await api.post("/getMonitors", {
+            api_key: ApiKeys[i],
+            format: "json",
+            logs: 1,
+            log_types: "1-2",
+            logs_start_date: logs_start_date,
+            logs_end_date: logs_end_date,
+            custom_uptime_ranges: ranges.join("-"),
+        });
+        if (data == null) {
+            data = res.data;
+        } else {
+            data.stat =
+                data.stat !== "ok" || res.data.stat !== "ok" ? "fail" : "ok";
+            data.pagination.offset += res.data.pagination.offset;
+            data.pagination.limit += res.data.pagination.limit;
+            data.pagination.total += res.data.pagination.total;
+            res.data.monitors.map((value: MonitorElement) => {
+                data.monitors.push(value);
+            });
+        }
+    }
+
+    if (Debug) {
+        console.log(data);
     }
     return {
         props: {
-            data: monitorsData.data,
+            data: data,
             time: dayjs().format("YYYY-MM-DD HH:mm:ss").toString(),
         },
     };
@@ -120,6 +147,7 @@ export default function Home({
     const classes = useStyles();
 
     if (Debug) {
+        console.log("[Home]: Main function gets the data value.");
         console.log(data);
     }
     const monitors: MonitorElement[] = data.monitors;

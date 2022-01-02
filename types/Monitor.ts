@@ -1,5 +1,5 @@
 export interface Monitor {
-    stat: string;
+    stat: "ok" | "fail";
     pagination: Pagination;
     monitors: MonitorElement[];
 }
