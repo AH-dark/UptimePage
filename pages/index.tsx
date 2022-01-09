@@ -1,48 +1,41 @@
 import React from "react";
-import Head                       from "next/head";
+import Head from "next/head";
 import { Config } from "../config";
 import {
     Box,
     Container,
     CssBaseline,
+    Link,
     Paper,
     Theme,
     Typography,
-}                                   from "@mui/material";
-import api                          from "../middleware/API";
+} from "@mui/material";
+import api from "../middleware/API";
 import { createStyles, makeStyles } from "@mui/styles";
-import dayjs                        from "dayjs";
-import { Monitor, MonitorElement }  from "../types/Monitor";
-import CheckCircleIcon              from "@mui/icons-material/CheckCircleRounded";
-import ErrorIcon                    from "@mui/icons-material/ErrorRounded";
-import StatusCard                   from "../components/StatusCard";
-import Footer                       from "../components/Footer";
-import { GetServerSideProps }       from "next";
-import _Global                      from "../global";
+import dayjs from "dayjs";
+import { Monitor, MonitorElement } from "../types/Monitor";
+import StatusCard from "../components/StatusCard";
+import Footer from "../components/Footer";
+import { GetServerSideProps } from "next";
+import _Global from "../global";
+import { getDateRange } from "../libs/DateRange";
+import AllOperationalPart from "../components/AllOperationalPart";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-const Debug:boolean = _Global().Debug;
+const Debug: boolean = _Global().Debug;
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // noinspection JSUnusedGlobalSymbols
 /**
  * @description 从API获取数据
  * @see https://www.nextjs.cn/docs/basic-features/data-fetching
  */
-export const getServerSideProps: GetServerSideProps = async () => {
-    const dates = [];
-    const days = 29;
-    const today = dayjs(new Date().setHours(0, 0, 0, 0));
-    for (let d = 0; d < days; d++) {
-        dates.push(today.subtract(d, "day"));
-    }
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const dateRange = getDateRange();
 
-    const ranges = [];
-    dates.forEach((date) => {
-        ranges.push(`${date.unix()}_${date.add(1, "day").unix()}`);
-    });
-
-    const logs_start_date = dates[dates.length - 1].unix();
-    const logs_end_date = dates[0].add(1, "day").unix();
-    ranges.push(`${logs_start_date}_${logs_end_date}`);
+    dayjs.locale(context.locale);
 
     let data: Monitor = null;
     const ApiKeys = Config.apikey.split(_Global().ApiKeySplit);
@@ -50,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         console.log("[SSR]: Split API Keys success");
         console.log(ApiKeys);
     }
-    for(let i=0;i<ApiKeys.length;i++) {
+    for (let i = 0; i < ApiKeys.length; i++) {
         if (Debug) {
             console.log("[SSR]: Processing API Key " + ApiKeys[i]);
         }
@@ -59,9 +52,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
             format: "json",
             logs: 1,
             log_types: "1-2",
-            logs_start_date: logs_start_date,
-            logs_end_date: logs_end_date,
-            custom_uptime_ranges: ranges.join("-"),
+            logs_start_date: dateRange.logs_start_date,
+            logs_end_date: dateRange.logs_end_date,
+            custom_uptime_ranges: dateRange.custom_uptime_ranges,
         });
         if (data == null) {
             data = res.data;
@@ -83,7 +76,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
         props: {
             data: data,
-            time: dayjs().format("YYYY-MM-DD HH:mm:ss").toString(),
+            time: dayjs()
+                .tz(context.locale)
+                .format("YYYY-MM-DD HH:mm:ss")
+                .toString(),
         },
     };
 };
@@ -101,27 +97,6 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-        },
-        pspHeadSec: {
-            marginTop: -40,
-            marginBottom: theme.spacing(4),
-            padding: "2.6rem",
-            boxShadow: "0 20px 60px rgb(0 0 0 / 10%)",
-            color: "#131a26",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            alignItems: "center",
-        },
-        statIconOperational: {
-            color: "#3bd671",
-            marginRight: theme.spacing(3),
-            fontSize: 70,
-        },
-        statIconUnavailable: {
-            color: "#d30e0e",
-            marginRight: theme.spacing(3),
-            fontSize: 70,
         },
         paper: {
             display: "flex",
@@ -178,14 +153,21 @@ export default function Home({
             <CssBaseline />
             <header className={classes.header}>
                 <Container maxWidth={"lg"} className={classes.headerContainer}>
-                    <Typography
-                        variant={"h2"}
-                        component={"h1"}
-                        color={"#FFF"}
-                        fontWeight={"bold"}
+                    <Link
+                        href={"/"}
+                        target={"_self"}
+                        color={"inherit"}
+                        underline={"none"}
                     >
-                        {Config.siteName}
-                    </Typography>
+                        <Typography
+                            variant={"h2"}
+                            component={"h1"}
+                            color={"#FFF"}
+                            fontWeight={"bold"}
+                        >
+                            {Config.siteName}
+                        </Typography>
+                    </Link>
                     <Typography
                         variant={"body1"}
                         component={"span"}
@@ -197,49 +179,7 @@ export default function Home({
                 </Container>
             </header>
             <Container maxWidth={"md"}>
-                <Paper className={classes.pspHeadSec}>
-                    {isAllOperational ? (
-                        <>
-                            <CheckCircleIcon
-                                className={classes.statIconOperational}
-                            />
-                            <Typography
-                                variant={"h4"}
-                                component={"h2"}
-                                fontWeight={"bold"}
-                            >
-                                All systems{" "}
-                                <span
-                                    style={{
-                                        color: "#3bd671",
-                                    }}
-                                >
-                                    operational
-                                </span>
-                            </Typography>
-                        </>
-                    ) : (
-                        <>
-                            <ErrorIcon
-                                className={classes.statIconUnavailable}
-                            />
-                            <Typography
-                                variant={"h4"}
-                                component={"h2"}
-                                fontWeight={"bold"}
-                            >
-                                Some systems{" "}
-                                <span
-                                    style={{
-                                        color: "#d30e0e",
-                                    }}
-                                >
-                                    unavailable
-                                </span>
-                            </Typography>
-                        </>
-                    )}
-                </Paper>
+                <AllOperationalPart isOperational={isAllOperational} />
                 <Box component={"section"} pb={6}>
                     <Typography
                         variant={"h4"}
@@ -250,12 +190,18 @@ export default function Home({
                     </Typography>
                     <Paper className={classes.paper}>
                         {monitors.map(
-                            (monitor: MonitorElement, index: number) => {
+                            (
+                                monitor: MonitorElement,
+                                index: number,
+                                monitors: MonitorElement[]
+                            ) => {
                                 if (monitor.status !== 0) {
                                     return (
                                         <StatusCard
                                             monitor={monitor}
                                             key={index}
+                                            index={index}
+                                            total={monitors.length}
                                         />
                                     );
                                 }

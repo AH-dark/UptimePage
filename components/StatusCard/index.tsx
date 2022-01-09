@@ -2,6 +2,7 @@ import React from "react";
 import { MonitorElement } from "../../types/Monitor";
 import {
     Box,
+    Link,
     Theme,
     Tooltip,
     Typography,
@@ -13,6 +14,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorIcon from "@mui/icons-material/ErrorRounded";
 import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
 import dayjs from "dayjs";
+import { Config } from "../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -90,6 +92,8 @@ const getTimestamp: (day: number) => number = (day: number) => {
 
 export default function StatusCard(props: {
     monitor: MonitorElement;
+    index: number;
+    total: number;
 }): JSX.Element {
     const monitor: MonitorElement = props.monitor;
     const theme: Theme = useTheme<Theme>();
@@ -116,7 +120,9 @@ export default function StatusCard(props: {
     const widthLg: boolean = useMediaQuery(
         theme.breakpoints.between("md", "lg")
     );
-    const widXl: boolean = useMediaQuery(theme.breakpoints.between("lg", "xl"));
+    const widthXl: boolean = useMediaQuery(
+        theme.breakpoints.between("lg", "xl")
+    );
 
     if (widthSm) {
         match = 1;
@@ -124,26 +130,57 @@ export default function StatusCard(props: {
         match = 2;
     } else if (widthLg) {
         match = 3;
-    } else if (widXl) {
+    } else if (widthXl) {
         match = 4;
     } else {
         match = 5;
     }
 
-    const matchToSize: Array<number> = [30, 23, 18, 6, 0, 0];
+    const matchToSize: Array<number> = [90, 83, 78, 66, 60, 60];
     const iconNum: number = matchToSize[match];
 
+    const isLast: boolean = props.index === props.total - 1;
+
     return (
-        <Box className={classes.root}>
+        <Box
+            className={classes.root}
+            style={{
+                borderBottom: isLast && "none",
+                paddingBottom: isLast && 0,
+            }}
+            id={"monitor-" + (props.index + 1).toString()}
+        >
             <Box className={classes.header}>
                 <Box className={classes.text}>
-                    <Typography
-                        variant={"h5"}
-                        component={"h3"}
-                        display={"inline-flex"}
-                    >
-                        {monitor.friendly_name}
-                    </Typography>
+                    {Config.usePage ? (
+                        <Link
+                            href={"/monitor/" + monitor.id.toString()}
+                            target={"_self"}
+                            color={"inherit"}
+                            underline={"none"}
+                        >
+                            <Tooltip
+                                title={"Click for more details"}
+                                placement={"top"}
+                            >
+                                <Typography
+                                    variant={"h5"}
+                                    component={"h3"}
+                                    display={"inline-flex"}
+                                >
+                                    {monitor.friendly_name}
+                                </Typography>
+                            </Tooltip>
+                        </Link>
+                    ) : (
+                        <Typography
+                            variant={"h5"}
+                            component={"h3"}
+                            display={"inline-flex"}
+                        >
+                            {monitor.friendly_name}
+                        </Typography>
+                    )}
                     <Typography
                         variant={"body1"}
                         component={"span"}
@@ -198,7 +235,7 @@ export default function StatusCard(props: {
                     }
 
                     if (
-                        getTimestamp(customUptime.length - index - 1) >=
+                        getTimestamp(customUptime.length - index - 2) >=
                         monitor.create_datetime
                     ) {
                         title =

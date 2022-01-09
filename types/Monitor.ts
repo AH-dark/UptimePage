@@ -1,7 +1,7 @@
 export interface Monitor {
     stat: "ok" | "fail";
-    pagination: Pagination;
-    monitors: MonitorElement[];
+    pagination?: Pagination;
+    monitors?: MonitorElement[];
 }
 
 export interface MonitorElement {
