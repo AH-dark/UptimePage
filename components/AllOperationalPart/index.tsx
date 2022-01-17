@@ -31,27 +31,29 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function CheckText(props: { checkTime: number }) {
-    let _time: string;
-    const checkTime = props.checkTime;
-    if (checkTime <= 1) {
-        _time = checkTime.toString() + " second";
-    } else if (checkTime < 60) {
-        _time = checkTime.toString() + " seconds";
-    } else if (checkTime == 60) {
-        _time = parseInt((checkTime / 60).toString()) + " minute";
-    } else if (checkTime < 3600) {
-        _time = parseInt((checkTime / 60).toString()) + " minutes";
-    } else if (checkTime == 3600) {
-        _time = parseInt((checkTime / 3600).toString()) + " hour";
-    } else if (checkTime < 86400) {
-        _time = parseInt((checkTime / 3600).toString()) + " hours";
-    } else if (checkTime == 86400) {
-        _time = parseInt((checkTime / 86400).toString()) + " day";
-    } else if (checkTime < 2592000) {
-        _time = parseInt((checkTime / 86400).toString()) + " days";
-    } else {
-        _time = checkTime.toString() + " seconds";
-    }
+    const TimeToText = (checkTime: number): string => {
+        switch (true) {
+            case checkTime <= 1:
+                return checkTime.toString() + " second";
+            case checkTime < 60:
+                return checkTime.toString() + " seconds";
+            case checkTime == 60:
+                return parseInt((checkTime / 60).toString()) + " minute";
+            case checkTime < 3600:
+                return parseInt((checkTime / 60).toString()) + " minutes";
+            case checkTime == 3600:
+                return parseInt((checkTime / 3600).toString()) + " hour";
+            case checkTime < 86400:
+                return parseInt((checkTime / 3600).toString()) + " hours";
+            case checkTime == 86400:
+                return parseInt((checkTime / 86400).toString()) + " day";
+            case checkTime < 2592000:
+                return parseInt((checkTime / 86400).toString()) + " days";
+            default:
+                return checkTime.toString() + " seconds";
+        }
+    };
+
     return (
         <Typography
             variant={"body1"}
@@ -59,7 +61,7 @@ function CheckText(props: { checkTime: number }) {
             fontWeight={"normal"}
             color={"#687790"}
         >
-            Checked every {_time}.
+            Checked every {TimeToText(props.checkTime)}.
         </Typography>
     );
 }
