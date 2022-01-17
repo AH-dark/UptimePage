@@ -15,7 +15,6 @@ import ErrorIcon from "@mui/icons-material/ErrorRounded";
 import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
 import dayjs from "dayjs";
 import { Config } from "../../config";
-import _Global from "../../global";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -48,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         availability: {
             fontSize: 20,
-            color: _Global().Color.Available,
+            color: "#3bd671",
             [theme.breakpoints.up("sm")]: {
                 marginLeft: theme.spacing(1),
             },
@@ -196,13 +195,13 @@ export default function StatusCard(props: {
                         <>
                             <CheckCircleIcon
                                 className={classes.statusIcon}
-                                style={{ color: _Global().Color.Available }}
+                                style={{ color: "#3bd671" }}
                             />
                             <Typography
                                 variant={"h6"}
                                 component={"span"}
                                 className={classes.statusText}
-                                style={{ color: _Global().Color.Available }}
+                                style={{ color: "#3bd671" }}
                             >
                                 {"Operational"}
                             </Typography>
@@ -211,13 +210,13 @@ export default function StatusCard(props: {
                         <>
                             <ErrorIcon
                                 className={classes.statusIcon}
-                                style={{ color: _Global().Color.Unavailable }}
+                                style={{ color: "#d30e0e" }}
                             />
                             <Typography
                                 variant={"h6"}
                                 component={"span"}
                                 className={classes.statusText}
-                                style={{ color: _Global().Color.Unavailable }}
+                                style={{ color: "#d30e0e" }}
                             >
                                 {"Down"}
                             </Typography>
@@ -246,14 +245,14 @@ export default function StatusCard(props: {
                             "%";
 
                         if (value === 100) {
-                            iconColor = _Global().Color.Available;
+                            iconColor = "#3bd671";
                         } else if (value >= 99) {
-                            iconColor = _Global().Color.Available;
+                            iconColor = "#3bd671";
                             fillOpacity = 0.5;
                         } else if (value >= 95) {
-                            iconColor = _Global().Color.Warning;
+                            iconColor = "#f29030";
                         } else {
-                            iconColor = _Global().Color.Unavailable;
+                            iconColor = "#df484a";
                         }
                     } else {
                         title =

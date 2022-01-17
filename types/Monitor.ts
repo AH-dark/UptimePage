@@ -25,13 +25,13 @@ export interface MonitorElement {
     custom_uptime_ranges?: string;
 }
 
-export interface Log {
+interface Log {
     type: number;
     datetime: number;
     duration: number;
 }
 
-export interface Pagination {
+interface Pagination {
     offset: number;
     limit: number;
     total: number;

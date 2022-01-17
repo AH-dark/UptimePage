@@ -22,7 +22,6 @@ import { getDateRange } from "../libs/DateRange";
 import AllOperationalPart from "../components/AllOperationalPart";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import StatusBar from "../components/Footer/StatusBar";
 
 const Debug: boolean = _Global().Debug;
 dayjs.extend(utc);
@@ -130,8 +129,6 @@ export default function Home({
     const isAllOperational: boolean =
         data.pagination.offset === 0 || data.pagination.total === 0;
 
-    let MonitorAvailable = 0;
-
     return (
         <>
             <Head>
@@ -199,10 +196,6 @@ export default function Home({
                                 monitors: MonitorElement[]
                             ) => {
                                 if (monitor.status !== 0) {
-                                    // TODO: Calculation of available monitors is in a loop, so rendering may slow down
-                                    if (monitor.status === 2) {
-                                        MonitorAvailable += 1;
-                                    }
                                     return (
                                         <StatusCard
                                             monitor={monitor}
@@ -218,10 +211,6 @@ export default function Home({
                 </Box>
                 <Footer />
             </Container>
-            <StatusBar
-                total={data.pagination.total}
-                available={MonitorAvailable}
-            />
         </>
     );
 }
