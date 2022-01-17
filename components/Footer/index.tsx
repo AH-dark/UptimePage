@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function Footer(): JSX.Element {
+export default function Footer() {
     const theme: Theme = useTheme<Theme>();
     const classes = useStyles(theme);
 
