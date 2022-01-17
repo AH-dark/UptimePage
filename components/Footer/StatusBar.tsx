@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createStyles, makeStyles, useTheme } from "@mui/styles";
 import {
     AppBar,
@@ -44,6 +44,8 @@ export default function StatusBar(props: {
     const theme = useTheme<Theme>();
     const classes = useStyles(theme);
 
+    useEffect(() => {});
+
     return (
         <AppBar
             position={"fixed"}
@@ -57,36 +59,40 @@ export default function StatusBar(props: {
                         {"Total " + props.total.toString()}
                     </Typography>
                 </Box>
-                <Divider
-                    variant={"middle"}
-                    orientation="vertical"
-                    flexItem={true}
-                />
-                <Box display={"inline-flex"}>
-                    <CircleRoundedIcon
-                        style={{ color: _Global().Color.Available }}
-                        className={classes.icon}
-                    />
-                    <Typography variant={"body2"} ml={1}>
-                        {"Up "}
-                        {props.available.toString()}
-                    </Typography>
-                </Box>
-                <Divider
-                    variant={"middle"}
-                    orientation="vertical"
-                    flexItem={true}
-                />
-                <Box display={"inline-flex"}>
-                    <CircleRoundedIcon
-                        style={{ color: _Global().Color.Unavailable }}
-                        className={classes.icon}
-                    />
-                    <Typography variant={"body2"} ml={1}>
-                        {"Down "}
-                        {(props.total - props.available).toString()}
-                    </Typography>
-                </Box>
+                {props.available && (
+                    <>
+                        <Divider
+                            variant={"middle"}
+                            orientation="vertical"
+                            flexItem={true}
+                        />
+                        <Box display={"inline-flex"}>
+                            <CircleRoundedIcon
+                                style={{ color: _Global().Color.Available }}
+                                className={classes.icon}
+                            />
+                            <Typography variant={"body2"} ml={1}>
+                                {"Up "}
+                                {props.available.toString()}
+                            </Typography>
+                        </Box>
+                        <Divider
+                            variant={"middle"}
+                            orientation="vertical"
+                            flexItem={true}
+                        />
+                        <Box display={"inline-flex"}>
+                            <CircleRoundedIcon
+                                style={{ color: _Global().Color.Unavailable }}
+                                className={classes.icon}
+                            />
+                            <Typography variant={"body2"} ml={1}>
+                                {"Down "}
+                                {(props.total - props.available).toString()}
+                            </Typography>
+                        </Box>
+                    </>
+                )}
             </Toolbar>
         </AppBar>
     );

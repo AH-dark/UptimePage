@@ -23,6 +23,8 @@ import AllOperationalPart from "../components/AllOperationalPart";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import StatusBar from "../components/Footer/StatusBar";
+import { AxiosResponse } from "axios";
+import { AccountDetails } from "../types/AccountDetails";
 
 const Debug: boolean = _Global().Debug;
 dayjs.extend(utc);
@@ -39,6 +41,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     dayjs.locale(context.locale);
 
     let data: Monitor = null;
+    let accountDetails: AccountDetails = null;
+
     const ApiKeys = Config.apikey.split(_Global().ApiKeySplit);
     if (Debug) {
         console.log("[SSR]: Split API Keys success");
@@ -48,7 +52,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         if (Debug) {
             console.log("[SSR]: Processing API Key " + ApiKeys[i]);
         }
-        const res = await api.post("/getMonitors", {
+        // Get Monitors List
+        const res: AxiosResponse<Monitor> = await api.post("/getMonitors", {
             api_key: ApiKeys[i],
             format: "json",
             logs: 1,
@@ -69,6 +74,31 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 data.monitors.push(value);
             });
         }
+
+        // Get Account Details
+        const resAccount: AxiosResponse<AccountDetails> = await api.post(
+            "/getAccountDetails",
+            {
+                api_key: ApiKeys[i],
+                format: "json",
+            }
+        );
+        if (resAccount.data.stat === "ok") {
+            if (accountDetails === null) {
+                accountDetails = resAccount.data;
+            } else {
+                accountDetails.account.monitor_limit +=
+                    resAccount.data.account.monitor_limit;
+                accountDetails.account.monitor_interval +=
+                    resAccount.data.account.monitor_interval;
+                accountDetails.account.up_monitors +=
+                    resAccount.data.account.up_monitors;
+                accountDetails.account.down_monitors +=
+                    resAccount.data.account.down_monitors;
+                accountDetails.account.paused_monitors +=
+                    resAccount.data.account.paused_monitors;
+            }
+        }
     }
 
     if (Debug) {
@@ -77,6 +107,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         props: {
             data: data,
+            account: accountDetails,
             time: dayjs()
                 .tz(context.locale)
                 .format("YYYY-MM-DD HH:mm:ss")
@@ -115,9 +146,11 @@ const useStyles = makeStyles((theme: Theme) =>
 // noinspection JSUnusedGlobalSymbols
 export default function Home({
     data,
+    account,
     time,
 }: {
     data: Monitor;
+    account: AccountDetails;
     time: string;
 }): JSX.Element {
     const classes = useStyles();
@@ -183,7 +216,7 @@ export default function Home({
             </header>
             <Container maxWidth={"md"}>
                 <AllOperationalPart isOperational={isAllOperational} />
-                <Box component={"section"} pb={6}>
+                <Box component={"section"} pb={4}>
                     <Typography
                         variant={"h4"}
                         component={"h2"}
@@ -219,8 +252,12 @@ export default function Home({
                 <Footer />
             </Container>
             <StatusBar
-                total={data.pagination.total}
-                available={MonitorAvailable}
+                total={
+                    account.account.up_monitors +
+                    account.account.down_monitors +
+                    account.account.paused_monitors
+                }
+                available={account.account.up_monitors}
             />
         </>
     );

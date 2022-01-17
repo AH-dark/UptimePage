@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             textAlign: "center",
-            paddingBottom: theme.spacing(2),
+            paddingBottom: theme.spacing(10),
         },
     })
 );
