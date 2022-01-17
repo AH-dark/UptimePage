@@ -25,9 +25,6 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import StatusCard from "../../components/StatusCard";
 import OverAllUptime from "../../components/OverAllUptime";
-import StatusBar from "../../components/Footer/StatusBar";
-import { AxiosResponse } from "axios";
-import { AccountDetails } from "../../types/AccountDetails";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -46,8 +43,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const dataRange = getDateRange();
 
     let data: Monitor = null;
-    let accountDetails: AccountDetails = null;
-
     const ApiKeys = Config.apikey.split(_Global().ApiKeySplit);
     if (Debug) {
         console.log("[SSR]: Split API Keys success");
@@ -58,8 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         if (Debug) {
             console.log("[SSR]: Processing API Key " + ApiKeys[i]);
         }
-        // Get Monitors List
-        const res: AxiosResponse<Monitor> = await api.post("/getMonitors", {
+        const res = await api.post("/getMonitors", {
             api_key: ApiKeys[i],
             monitors: `${MonitorId}-${MonitorId + 1}`,
             format: "json",
@@ -72,41 +66,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         if (res.data.stat === "ok") {
             data = res.data;
         }
-
-        // Get Account Details
-        const resAccount: AxiosResponse<AccountDetails> = await api.post(
-            "/getAccountDetails",
-            {
-                api_key: ApiKeys[i],
-                format: "json",
-            }
-        );
-        if (resAccount.data.stat === "ok") {
-            if (accountDetails === null) {
-                accountDetails = resAccount.data;
-            } else {
-                accountDetails.account.monitor_limit +=
-                    resAccount.data.account.monitor_limit;
-                accountDetails.account.monitor_interval +=
-                    resAccount.data.account.monitor_interval;
-                accountDetails.account.up_monitors +=
-                    resAccount.data.account.up_monitors;
-                accountDetails.account.down_monitors +=
-                    resAccount.data.account.down_monitors;
-                accountDetails.account.paused_monitors +=
-                    resAccount.data.account.paused_monitors;
-            }
-        }
     }
 
     if (Debug) {
         console.log(data);
     }
-
     return {
         props: {
             data: data,
-            account: accountDetails,
             time: dayjs()
                 .tz(context.locale)
                 .format("YYYY-MM-DD HH:mm:ss")
@@ -148,15 +115,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Debug: boolean = _Global().Debug;
 
-export default function MonitorId({
-    data,
-    account,
-    time,
-}: {
-    data: Monitor;
-    account: AccountDetails;
-    time: string;
-}) {
+export default function MonitorId({ data, time }) {
     const router = useRouter();
     const MonitorId: number = Number(router.query.id.toString().split("-"));
 
@@ -173,7 +132,8 @@ export default function MonitorId({
         console.log(data);
     }
     const monitor: MonitorElement = data.monitors[0]; // Due to the imperfection of the UptimeRobot API, I had to request 2 Monitors, and the former is what we need, so only the former data is obtained.
-    const isAllOperational: boolean = account.account.down_monitors === 0;
+    const isAllOperational: boolean =
+        data.pagination.offset === 0 || data.pagination.total === 0;
 
     return (
         <>
@@ -290,14 +250,6 @@ export default function MonitorId({
                 </Box>
                 <Footer />
             </Container>
-            <StatusBar
-                total={
-                    account.account.up_monitors +
-                    account.account.down_monitors +
-                    account.account.paused_monitors
-                }
-                available={account.account.up_monitors}
-            />
         </>
     );
 }
