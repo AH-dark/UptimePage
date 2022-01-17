@@ -3,6 +3,7 @@ import { createStyles, makeStyles, useTheme } from "@mui/styles";
 import { Box, Paper, Theme, Typography, useMediaQuery } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorIcon from "@mui/icons-material/ErrorRounded";
+import _Global from "../../global";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,12 +19,12 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
         },
         statIconOperational: {
-            color: "#3bd671",
+            color: _Global().Color.Available,
             marginRight: theme.spacing(3),
             fontSize: 70,
         },
         statIconUnavailable: {
-            color: "#d30e0e",
+            color: _Global().Color.Unavailable,
             marginRight: theme.spacing(3),
             fontSize: 70,
         },
@@ -94,7 +95,7 @@ export default function AllOperationalPart(props: {
                             {props.name ? props.name + " is" : "All systems"}{" "}
                             <span
                                 style={{
-                                    color: "#3bd671",
+                                    color: _Global().Color.Available,
                                 }}
                             >
                                 operational
@@ -117,7 +118,7 @@ export default function AllOperationalPart(props: {
                             Some systems{" "}
                             <span
                                 style={{
-                                    color: "#d30e0e",
+                                    color: _Global().Color.Unavailable,
                                 }}
                             >
                                 unavailable
